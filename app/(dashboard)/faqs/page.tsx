@@ -77,6 +77,10 @@ export default function FaqsPage() {
   }, [fetchFaqs]);
 
   const handleMoveUp = useCallback(async (index: number) => {
+    if (sorting.length > 0 && sorting[0].id !== "order") {
+      toast.info("Please clear column sorting to reorder items by display sequence.");
+      return;
+    }
     if (index <= 0) return;
     const target = data[index];
     const prevItem = data[index - 1];
@@ -95,9 +99,13 @@ export default function FaqsPage() {
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to reorder category");
     }
-  }, [data, fetchFaqs]);
+  }, [data, fetchFaqs, sorting]);
 
   const handleMoveDown = useCallback(async (index: number) => {
+    if (sorting.length > 0 && sorting[0].id !== "order") {
+      toast.info("Please clear column sorting to reorder items by display sequence.");
+      return;
+    }
     if (index >= data.length - 1) return;
     const target = data[index];
     const nextItem = data[index + 1];
@@ -116,7 +124,7 @@ export default function FaqsPage() {
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to reorder category");
     }
-  }, [data, fetchFaqs]);
+  }, [data, fetchFaqs, sorting]);
 
   const columns = React.useMemo(
     () =>

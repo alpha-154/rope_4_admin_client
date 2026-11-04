@@ -126,9 +126,23 @@ export function FaqDialog({
     );
 
     try {
+      const {
+        _id,
+        id,
+        organizationId,
+        createdAt,
+        updatedAt,
+        __v,
+        index,
+        ...cleanData
+      } = formData as any;
+
       const payload = {
-        ...formData,
-        faqs: validFaqs,
+        ...cleanData,
+        faqs: validFaqs.map((f: any) => {
+          const { _id: _fId, id: _fId2, ...fRest } = f;
+          return fRest;
+        }),
       };
 
       if (isEditing && formData._id) {

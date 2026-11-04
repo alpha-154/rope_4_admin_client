@@ -123,12 +123,22 @@ export function ReviewDialog({
     );
 
     try {
+      const {
+        _id,
+        id,
+        organizationId,
+        createdAt,
+        updatedAt,
+        __v,
+        ...payload
+      } = formData as any;
+
       if (isEditing && formData._id) {
-        await apiClient.patch(`/reviews/${formData._id}`, formData);
+        await apiClient.patch(`/reviews/${formData._id}`, payload);
         toast.dismiss(toastId);
         toast.success("Review updated successfully");
       } else {
-        await apiClient.post("/reviews", formData);
+        await apiClient.post("/reviews", payload);
         toast.dismiss(toastId);
         toast.success("Review created successfully");
       }
@@ -321,3 +331,4 @@ export function ReviewDialog({
     </Dialog>
   );
 }
+

@@ -137,11 +137,21 @@ export function PopoverDialog({
     );
 
     try {
+      const {
+        _id,
+        id,
+        organizationId,
+        createdAt,
+        updatedAt,
+        __v,
+        ...cleanData
+      } = formData as any;
+
       const payload = {
-        ...formData,
-        triggerDelay: Number(formData.triggerDelay),
-        startDate: formData.startDate ? new Date(formData.startDate) : undefined,
-        endDate: formData.endDate ? new Date(formData.endDate) : undefined,
+        ...cleanData,
+        triggerDelay: Number(cleanData.triggerDelay || 0),
+        startDate: cleanData.startDate ? new Date(cleanData.startDate) : undefined,
+        endDate: cleanData.endDate ? new Date(cleanData.endDate) : undefined,
       };
 
       if (isEditing && formData._id) {
@@ -380,3 +390,4 @@ export function PopoverDialog({
     </Dialog>
   );
 }
+

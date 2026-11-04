@@ -323,19 +323,44 @@ export function ProgramForm({
     );
 
     try {
+      const {
+        _id,
+        id,
+        organizationId,
+        createdAt,
+        updatedAt,
+        __v,
+        ...cleanData
+      } = formData as any;
+
       const payload = {
-        ...formData,
+        ...cleanData,
         price: {
-          ...formData.price,
-          amount: Number(formData.price.amount),
+          ...cleanData.price,
+          amount: Number(cleanData.price?.amount || 0),
         },
-        duration: Number(formData.duration),
-        departures: formData.departures.map((d) => ({
-          ...d,
-          seatsTotal: Number(d.seatsTotal),
-          seatsBooked: Number(d.seatsBooked),
-          priceOverride: d.priceOverride ? Number(d.priceOverride) : undefined,
-        })),
+        duration: Number(cleanData.duration || 1),
+        itinerary: (cleanData.itinerary || []).map((it: any) => {
+          const { _id: _itId, id: _itId2, ...itRest } = it;
+          return {
+            ...itRest,
+            day: Number(itRest.day || 1),
+            distanceKm: itRest.distanceKm ? Number(itRest.distanceKm) : undefined,
+          };
+        }),
+        departures: (cleanData.departures || []).map((d: any) => {
+          const { _id: _depId, id: _depId2, ...depRest } = d;
+          return {
+            ...depRest,
+            seatsTotal: Number(depRest.seatsTotal || 0),
+            seatsBooked: Number(depRest.seatsBooked || 0),
+            priceOverride: depRest.priceOverride ? Number(depRest.priceOverride) : undefined,
+          };
+        }),
+        faqs: (cleanData.faqs || []).map((f: any) => {
+          const { _id: _fId, id: _fId2, ...fRest } = f;
+          return fRest;
+        }),
       };
 
       if (isEditing && formData._id) {

@@ -109,7 +109,7 @@ export default function DashboardPage() {
               <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
             </Link>
             <Link
-              href="/faqs/create"
+              href="/faqs"
               className="p-3 rounded-lg border border-border hover:bg-muted text-sm font-medium flex items-center justify-between transition-colors"
             >
               <span>Add FAQ</span>

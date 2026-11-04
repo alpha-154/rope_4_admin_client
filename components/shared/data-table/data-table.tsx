@@ -98,12 +98,20 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
+  const handleSearchChange = React.useCallback(
+    (term: string) => {
+      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+      onSearchChange?.(term);
+    },
+    [onSearchChange, setPagination]
+  );
+
   return (
     <div className="space-y-4">
       <DataTableToolbar
         table={table}
         searchPlaceholder={searchPlaceholder}
-        onSearchChange={onSearchChange}
+        onSearchChange={handleSearchChange}
         actions={toolbarActions}
       />
       <div className="rounded-md border bg-card">

@@ -62,6 +62,7 @@ export function UploadFiles({
         formData.append("folder", folder);
 
         const res = await apiClient.post("/admin/storage/upload-multiple", formData, {
+          params: { folder },
           headers: { "Content-Type": "multipart/form-data" },
         });
 
@@ -75,6 +76,7 @@ export function UploadFiles({
         formData.append("folder", folder);
 
         const res = await apiClient.post("/admin/storage/upload", formData, {
+          params: { folder },
           headers: { "Content-Type": "multipart/form-data" },
         });
 

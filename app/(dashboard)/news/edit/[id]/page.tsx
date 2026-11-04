@@ -49,3 +49,4 @@ export default function EditNewsPage() {
 
   return <NewsForm initialData={news} isEditing={true} />;
 }
+

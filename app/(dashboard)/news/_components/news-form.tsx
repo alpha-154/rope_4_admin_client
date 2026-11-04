@@ -97,8 +97,18 @@ export function NewsForm({ initialData, isEditing = false }: NewsFormProps) {
         .map((t) => t.trim().toLowerCase())
         .filter((t) => t.length > 0);
 
+      const {
+        _id,
+        id,
+        organizationId,
+        createdAt,
+        updatedAt,
+        __v,
+        ...cleanData
+      } = formData as any;
+
       const payload = {
-        ...formData,
+        ...cleanData,
         tags: parsedTags,
       };
 
@@ -332,3 +342,4 @@ export function NewsForm({ initialData, isEditing = false }: NewsFormProps) {
     </form>
   );
 }
+

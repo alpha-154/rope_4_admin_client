@@ -145,9 +145,22 @@ export function HighlightDialog({
     );
 
     try {
+      const {
+        _id,
+        id,
+        organizationId,
+        createdAt,
+        updatedAt,
+        __v,
+        ...cleanData
+      } = formData as any;
+
       const payload = {
-        ...formData,
-        items: validItems,
+        ...cleanData,
+        items: validItems.map((it: any) => {
+          const { _id: _itId, id: _itId2, ...itRest } = it;
+          return itRest;
+        }),
       };
 
       if (isEditing && formData._id) {
