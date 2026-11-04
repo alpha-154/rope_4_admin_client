@@ -4,3 +4,4 @@ export const dataTablePaginationDefaultState = {
   pageIndex: 0,
   pageSize: 10,
 };
+
