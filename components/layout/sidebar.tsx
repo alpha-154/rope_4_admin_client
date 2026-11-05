@@ -17,6 +17,7 @@ import {
   Inbox,
   Building,
   Mountain,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
@@ -34,6 +35,7 @@ const navigationItems = [
   { name: "Orders", href: "/shop/orders", icon: ClipboardList },
   { name: "Customers", href: "/customers", icon: Users },
   { name: "Form Submissions", href: "/forms", icon: Inbox },
+  { name: "Site Settings", href: "/settings", icon: Settings },
   { name: "Organization Profile", href: "/organization/profile", icon: Building },
 ];
 
