@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input/input";
 import { Label } from "@/components/ui/label/label";
 import { Switch } from "@/components/ui/switch/switch";
 import { Textarea } from "@/components/ui/textarea/textarea";
+import { FaqCategorySelect } from "@/components/shared/faq-category-select";
 import { apiClient } from "@/lib/axios";
 import { Plus, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -26,7 +27,8 @@ export interface FaqItemForm {
 export interface FaqFormData {
   _id?: string;
   category: string;
-  slug: string;
+  categoryId?: string;
+  slug?: string;
   index?: string;
   faqs: FaqItemForm[];
   isActive?: boolean;
@@ -50,7 +52,7 @@ export function FaqDialog({
 
   const [formData, setFormData] = useState<FaqFormData>({
     category: "",
-    slug: "",
+    categoryId: "",
     faqs: [{ question: "", answer: "" }],
     isActive: true,
   });
@@ -60,7 +62,7 @@ export function FaqDialog({
       setFormData({
         _id: initialData._id,
         category: initialData.category || "",
-        slug: initialData.slug || "",
+        categoryId: initialData.categoryId || "",
         faqs:
           initialData.faqs && initialData.faqs.length > 0
             ? initialData.faqs
@@ -70,7 +72,7 @@ export function FaqDialog({
     } else {
       setFormData({
         category: "",
-        slug: "",
+        categoryId: "",
         faqs: [{ question: "", answer: "" }],
         isActive: true,
       });
@@ -106,8 +108,8 @@ export function FaqDialog({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.category.trim()) {
-      toast.error("Category name is required");
+    if (!formData.categoryId && !formData.category.trim()) {
+      toast.error("Please select or create a category");
       return;
     }
 
@@ -134,11 +136,15 @@ export function FaqDialog({
         updatedAt,
         __v,
         index,
+        slug,
+        categoryId,
         ...cleanData
       } = formData as any;
 
       const payload = {
         ...cleanData,
+        // Send the reference when known; legacy groups fall back to the name
+        ...(categoryId ? { categoryId } : {}),
         faqs: validFaqs.map((f: any) => {
           const { _id: _fId, id: _fId2, ...fRest } = f;
           return fRest;
@@ -180,34 +186,25 @@ export function FaqDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label htmlFor="category">Category Name *</Label>
-              <Input
-                id="category"
-                placeholder="e.g. Beginners Guide"
-                value={formData.category}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    category: e.target.value,
-                    slug: prev.slug || e.target.value.toLowerCase().replace(/\s+/g, "-"),
-                  }))
-                }
-                required
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="slug">Slug (Optional)</Label>
-              <Input
-                id="slug"
-                placeholder="e.g. beginners-guide"
-                value={formData.slug}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, slug: e.target.value }))
-                }
-              />
-            </div>
+          <div className="space-y-1">
+            <Label htmlFor="category">Category Name *</Label>
+            <FaqCategorySelect
+              id="category"
+              value={formData.categoryId}
+              valueLabel={formData.category}
+              editingGroupCategoryId={isEditing ? initialData?.categoryId : undefined}
+              onChange={(cat) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  categoryId: cat?._id ?? "",
+                  category: cat?.name ?? "",
+                }))
+              }
+            />
+            <p className="text-[11px] text-muted-foreground">
+              Pick a category, or type a new name to create it. Use the pencil and trash icons to
+              rename or delete categories.
+            </p>
           </div>
 
           {/* Q&A Items Repeater */}

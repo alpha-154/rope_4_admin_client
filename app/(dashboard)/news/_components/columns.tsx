@@ -105,20 +105,12 @@ export const getNewsColumns = (
     cell: ({ row }) => {
       const status = row.original.status;
       if (status === "published") {
-        return (
-          <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/20">
-            Published
-          </Badge>
-        );
+        return <Badge variant="success">Published</Badge>;
       }
       if (status === "archived") {
         return <Badge variant="secondary">Archived</Badge>;
       }
-      return (
-        <Badge variant="outline" className="text-amber-600 border-amber-300">
-          Draft
-        </Badge>
-      );
+      return <Badge variant="warning">Draft</Badge>;
     },
   },
   {

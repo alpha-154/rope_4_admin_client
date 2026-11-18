@@ -80,13 +80,9 @@ export const getPopoverColumns = (
     cell: ({ row }) => {
       const active = row.original.isActive;
       return active ? (
-        <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/20">
-          Active
-        </Badge>
+        <Badge variant="success">Active</Badge>
       ) : (
-        <Badge variant="outline" className="text-muted-foreground">
-          Inactive
-        </Badge>
+        <Badge variant="secondary">Inactive</Badge>
       );
     },
   },

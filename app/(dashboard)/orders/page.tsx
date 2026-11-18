@@ -84,13 +84,13 @@ export default function OrdersPage() {
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-5">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <ClipboardList className="h-6 w-6 text-primary" />
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <ClipboardList className="h-6 w-6 text-emerald-600" />
             <span>Store Orders & Shipments</span>
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-500 mt-0.5">
             Process customer orders, verify payments, dispatch parcels, and manage fulfillment workflow.
           </p>
         </div>
@@ -99,7 +99,7 @@ export default function OrdersPage() {
       {/* Filter Toolbar */}
       <div className="flex flex-wrap items-center gap-3">
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white border-slate-200 text-xs rounded-xl shadow-xs">
             <SelectValue placeholder="Order Status" />
           </SelectTrigger>
           <SelectContent>
@@ -113,7 +113,7 @@ export default function OrdersPage() {
         </Select>
 
         <Select value={paymentFilter} onValueChange={setPaymentFilter}>
-          <SelectTrigger className="w-[170px]">
+          <SelectTrigger className="w-[170px] bg-white border-slate-200 text-xs rounded-xl shadow-xs">
             <SelectValue placeholder="Payment Status" />
           </SelectTrigger>
           <SelectContent>

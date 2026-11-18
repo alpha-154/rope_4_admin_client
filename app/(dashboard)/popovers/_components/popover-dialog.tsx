@@ -1,6 +1,6 @@
 "use client";
 
-import { UploadFiles } from "@/components/shared/upload-files";
+import { ImageUrlInput } from "@/components/shared/image-url-input";
 import { Button } from "@/components/ui/button/button";
 import {
   Dialog,
@@ -348,7 +348,7 @@ export function PopoverDialog({
 
           <div className="space-y-1.5 pt-2 border-t">
             <Label>Graphic / Image (Optional)</Label>
-            <UploadFiles
+            <ImageUrlInput
               value={formData.image || ""}
               onChange={(url) =>
                 setFormData((prev) => ({
@@ -356,7 +356,6 @@ export function PopoverDialog({
                   image: Array.isArray(url) ? url[0] : url,
                 }))
               }
-              folder="popovers"
             />
           </div>
 

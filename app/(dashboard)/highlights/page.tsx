@@ -9,10 +9,10 @@ import { Plus } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getHighlightColumns } from "./_components/columns";
-import { HighlightDialog, HighlightFormData } from "./_components/highlight-dialog";
+import { HighlightDialog, HighlightApiData } from "./_components/highlight-dialog";
 
 export default function HighlightsPage() {
-  const [data, setData] = useState<HighlightFormData[]>([]);
+  const [data, setData] = useState<HighlightApiData[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
@@ -25,7 +25,7 @@ export default function HighlightsPage() {
   // Dialog states
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [selectedHighlight, setSelectedHighlight] =
-    useState<HighlightFormData | null>(null);
+    useState<HighlightApiData | null>(null);
 
   const fetchHighlights = useCallback(async () => {
     setIsLoading(true);
@@ -60,7 +60,7 @@ export default function HighlightsPage() {
     fetchHighlights();
   }, [fetchHighlights]);
 
-  const handleEdit = useCallback((highlight: HighlightFormData) => {
+  const handleEdit = useCallback((highlight: HighlightApiData) => {
     setSelectedHighlight(highlight);
     setDialogOpen(true);
   }, []);
@@ -86,8 +86,8 @@ export default function HighlightsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Highlights & Stats</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Highlights & Stats</h1>
+          <p className="text-sm text-slate-500 mt-0.5">
             Manage site-wide statistics, trust pillars, and adventure feature cards.
           </p>
         </div>
@@ -96,7 +96,7 @@ export default function HighlightsPage() {
             setSelectedHighlight(null);
             setDialogOpen(true);
           }}
-          className="gap-2"
+          className="gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
         >
           <Plus className="h-4 w-4" /> Add Section
         </Button>

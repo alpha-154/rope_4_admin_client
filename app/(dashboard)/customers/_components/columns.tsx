@@ -99,14 +99,11 @@ export function getCustomerColumns(
       cell: ({ row }) => {
         const isBlocked = row.original.isBlocked;
         return isBlocked ? (
-          <Badge variant="destructive" className="text-xs font-medium">
+          <Badge variant="destructive">
             Suspended
           </Badge>
         ) : (
-          <Badge
-            variant="outline"
-            className="bg-emerald-500/15 text-emerald-700 border-emerald-300 text-xs font-medium"
-          >
+          <Badge variant="success">
             Active Traveler
           </Badge>
         );

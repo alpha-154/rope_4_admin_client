@@ -1,6 +1,6 @@
 "use client";
 
-import { UploadFiles } from "@/components/shared/upload-files";
+import { ImageUrlInput } from "@/components/shared/image-url-input";
 import { Button } from "@/components/ui/button/button";
 import {
   Dialog,
@@ -33,20 +33,12 @@ export interface ReviewFormData {
   rating: number;
   date?: string;
   text: string;
-  source: string;
+  designation?: string;
   videoUrl?: string;
   programTitle?: string;
   isFeatured?: boolean;
   status: string;
 }
-
-const SOURCES = [
-  { label: "Google Reviews", value: "google" },
-  { label: "Video Review", value: "video" },
-  { label: "Award / Accolade", value: "award" },
-  { label: "Trusted By / Partner", value: "trusted-by" },
-  { label: "Ambassador", value: "ambassador" },
-];
 
 interface ReviewDialogProps {
   open: boolean;
@@ -69,7 +61,7 @@ export function ReviewDialog({
     avatar: "",
     rating: 5,
     text: "",
-    source: "google",
+    designation: "",
     videoUrl: "",
     programTitle: "",
     isFeatured: false,
@@ -84,7 +76,7 @@ export function ReviewDialog({
         avatar: initialData.avatar || "",
         rating: initialData.rating || 5,
         text: initialData.text || "",
-        source: initialData.source || "google",
+        designation: initialData.designation || "",
         videoUrl: initialData.videoUrl || "",
         programTitle: initialData.programTitle || "",
         isFeatured: Boolean(initialData.isFeatured),
@@ -96,7 +88,7 @@ export function ReviewDialog({
         avatar: "",
         rating: 5,
         text: "",
-        source: "google",
+        designation: "",
         videoUrl: "",
         programTitle: "",
         isFeatured: false,
@@ -159,7 +151,7 @@ export function ReviewDialog({
         <DialogHeader>
           <DialogTitle>{isEditing ? "Edit Review" : "Add Review / Testimonial"}</DialogTitle>
           <DialogDescription>
-            Curate traveler feedback, Google ratings, awards, or video testimonials.
+            Testimonials shown in the website&apos;s reviews slider (approved only).
           </DialogDescription>
         </DialogHeader>
 
@@ -178,24 +170,16 @@ export function ReviewDialog({
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="source">Source *</Label>
-              <Select
-                value={formData.source}
-                onValueChange={(val) =>
-                  setFormData((prev) => ({ ...prev, source: val }))
+              <Label htmlFor="designation">Designation</Label>
+              <Input
+                id="designation"
+                maxLength={120}
+                placeholder="e.g. Expedition Leader, Keokradong Batch 12"
+                value={formData.designation || ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, designation: e.target.value }))
                 }
-              >
-                <SelectTrigger id="source">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {SOURCES.map((s) => (
-                    <SelectItem key={s.value} value={s.value}>
-                      {s.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              />
             </div>
           </div>
 
@@ -259,19 +243,17 @@ export function ReviewDialog({
             />
           </div>
 
-          {formData.source === "video" && (
-            <div className="space-y-1.5">
-              <Label htmlFor="videoUrl">Video URL (YouTube / Vimeo)</Label>
-              <Input
-                id="videoUrl"
-                placeholder="https://www.youtube.com/watch?v=..."
-                value={formData.videoUrl || ""}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, videoUrl: e.target.value }))
-                }
-              />
-            </div>
-          )}
+          <div className="space-y-1.5">
+            <Label htmlFor="videoUrl">Video URL (YouTube / Vimeo, optional)</Label>
+            <Input
+              id="videoUrl"
+              placeholder="https://www.youtube.com/watch?v=..."
+              value={formData.videoUrl || ""}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, videoUrl: e.target.value }))
+              }
+            />
+          </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="text">Review Content / Quote *</Label>
@@ -289,7 +271,7 @@ export function ReviewDialog({
 
           <div className="space-y-1.5">
             <Label>Author Avatar / Photo</Label>
-            <UploadFiles
+            <ImageUrlInput
               value={formData.avatar || ""}
               onChange={(url) =>
                 setFormData((prev) => ({
@@ -297,7 +279,6 @@ export function ReviewDialog({
                   avatar: Array.isArray(url) ? url[0] : url,
                 }))
               }
-              folder="reviews/avatars"
             />
           </div>
 

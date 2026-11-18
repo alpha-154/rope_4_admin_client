@@ -38,11 +38,13 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="relative flex h-screen overflow-hidden bg-[#F8FAFC]">
       <Sidebar />
-      <div className="flex flex-1 flex-col overflow-y-auto">
+      <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
         <Navbar />
-        <main className="flex-1 p-6 lg:p-8 bg-muted/20">{children}</main>
+        <main className="relative flex-1 min-h-0 overflow-y-auto p-6 lg:p-8 bg-[#F8FAFC]">
+          {children}
+        </main>
         <Footer />
       </div>
     </div>

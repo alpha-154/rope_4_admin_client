@@ -4,19 +4,24 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+          "border-emerald-200/80 bg-emerald-50 text-emerald-800 font-semibold shadow-xs",
         secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "border-slate-200 bg-slate-100 text-slate-700 hover:bg-slate-200/70",
         destructive:
-          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-foreground",
+          "border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100/70",
+        outline:
+          "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
         success:
-          "border-transparent bg-emerald-500 text-white hover:bg-emerald-500/90",
+          "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100/70",
+        warning:
+          "border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100/70",
+        info:
+          "border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100/70",
       },
     },
     defaultVariants: {

@@ -126,10 +126,10 @@ export default function ReviewsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
             Reviews & Accolades
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-500 mt-0.5">
             Curate Google ratings, video testimonials, ambassador feedback, and partner awards.
           </p>
         </div>
@@ -138,7 +138,7 @@ export default function ReviewsPage() {
             setSelectedReview(null);
             setDialogOpen(true);
           }}
-          className="gap-2"
+          className="gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
         >
           <Plus className="h-4 w-4" /> Add Review
         </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { UploadFiles } from "@/components/shared/upload-files";
+import { ImageUrlInput } from "@/components/shared/image-url-input";
 import {
   Button,
   Card,
@@ -83,7 +83,9 @@ export default function SiteSettingsPage() {
       }
     } catch (err: any) {
       console.error("Failed to load settings:", err);
-      toast.error(err.response?.data?.message || "Failed to load site settings");
+      toast.error(
+        err.response?.data?.message || "Failed to load site settings"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -107,16 +109,18 @@ export default function SiteSettingsPage() {
             const { _id: _cid, id: _cid2, ...cRest } = c;
             return cRest;
           }),
-          megaMenuCategories: (itemRest.megaMenuCategories || []).map((cat: any) => {
-            const { _id: _catId, id: _catId2, ...catRest } = cat;
-            return {
-              ...catRest,
-              items: (catRest.items || []).map((sub: any) => {
-                const { _id: _subId, id: _subId2, ...subRest } = sub;
-                return subRest;
-              }),
-            };
-          }),
+          megaMenuCategories: (itemRest.megaMenuCategories || []).map(
+            (cat: any) => {
+              const { _id: _catId, id: _catId2, ...catRest } = cat;
+              return {
+                ...catRest,
+                items: (catRest.items || []).map((sub: any) => {
+                  const { _id: _subId, id: _subId2, ...subRest } = sub;
+                  return subRest;
+                }),
+              };
+            }
+          ),
         };
       });
 
@@ -136,10 +140,12 @@ export default function SiteSettingsPage() {
         return sRest;
       });
 
-      const cleanFooterBottomLinks = (footer.bottomLinks || []).map((b: any) => {
-        const { _id, id, ...bRest } = b;
-        return bRest;
-      });
+      const cleanFooterBottomLinks = (footer.bottomLinks || []).map(
+        (b: any) => {
+          const { _id, id, ...bRest } = b;
+          return bRest;
+        }
+      );
 
       const cleanFooterBadges = (footer.badges || []).map((bg: any) => {
         const { _id, id, ...bgRest } = bg;
@@ -165,7 +171,9 @@ export default function SiteSettingsPage() {
       toast.success("Site navigation and settings saved successfully");
     } catch (err: any) {
       console.error("Save settings error:", err);
-      toast.error(err.response?.data?.message || "Failed to update site settings");
+      toast.error(
+        err.response?.data?.message || "Failed to update site settings"
+      );
     } finally {
       setIsSaving(false);
     }
@@ -203,26 +211,144 @@ export default function SiteSettingsPage() {
     });
   };
 
+  // Immutable update of a single nav item via a mapper fn
+  const mapNavItem = (itemIndex: number, fn: (item: any) => any) => {
+    setHeader((prev: any) => ({
+      ...prev,
+      navItems: prev.navItems.map((it: any, i: number) =>
+        i === itemIndex ? fn(it) : it
+      ),
+    }));
+  };
+
   const addNavChild = (itemIndex: number) => {
-    setHeader((prev: any) => {
-      const items = [...prev.navItems];
-      const children = items[itemIndex].children || [];
-      items[itemIndex].children = [
-        ...children,
+    mapNavItem(itemIndex, (it) => ({
+      ...it,
+      children: [
+        ...(it.children || []),
         { label: "Sub Link", href: "/programs" },
-      ];
-      return { ...prev, navItems: items };
-    });
+      ],
+    }));
+  };
+
+  const updateNavChild = (
+    itemIndex: number,
+    childIndex: number,
+    updates: any
+  ) => {
+    mapNavItem(itemIndex, (it) => ({
+      ...it,
+      children: (it.children || []).map((c: any, ci: number) =>
+        ci === childIndex ? { ...c, ...updates } : c
+      ),
+    }));
   };
 
   const removeNavChild = (itemIndex: number, childIndex: number) => {
-    setHeader((prev: any) => {
-      const items = [...prev.navItems];
-      items[itemIndex].children = items[itemIndex].children.filter(
+    mapNavItem(itemIndex, (it) => ({
+      ...it,
+      children: (it.children || []).filter(
         (_: any, ci: number) => ci !== childIndex
-      );
-      return { ...prev, navItems: items };
-    });
+      ),
+    }));
+  };
+
+  // --- Mega Menu Column Helpers ---
+  const addMegaCategory = (itemIndex: number) => {
+    mapNavItem(itemIndex, (it) => ({
+      ...it,
+      megaMenuCategories: [
+        ...(it.megaMenuCategories || []),
+        {
+          title: "New Column",
+          items: [{ label: "Menu Link", href: "/programs" }],
+        },
+      ],
+    }));
+  };
+
+  const updateMegaCategory = (
+    itemIndex: number,
+    catIndex: number,
+    updates: any
+  ) => {
+    mapNavItem(itemIndex, (it) => ({
+      ...it,
+      megaMenuCategories: (it.megaMenuCategories || []).map(
+        (cat: any, ci: number) =>
+          ci === catIndex ? { ...cat, ...updates } : cat
+      ),
+    }));
+  };
+
+  const removeMegaCategory = (itemIndex: number, catIndex: number) => {
+    mapNavItem(itemIndex, (it) => ({
+      ...it,
+      megaMenuCategories: (it.megaMenuCategories || []).filter(
+        (_: any, ci: number) => ci !== catIndex
+      ),
+    }));
+  };
+
+  const addMegaItem = (itemIndex: number, catIndex: number) => {
+    mapNavItem(itemIndex, (it) => ({
+      ...it,
+      megaMenuCategories: (it.megaMenuCategories || []).map(
+        (cat: any, ci: number) =>
+          ci === catIndex
+            ? {
+                ...cat,
+                items: [
+                  ...(cat.items || []),
+                  { label: "Menu Link", href: "/programs" },
+                ],
+              }
+            : cat
+      ),
+    }));
+  };
+
+  const updateMegaItem = (
+    itemIndex: number,
+    catIndex: number,
+    subIndex: number,
+    updates: any
+  ) => {
+    mapNavItem(itemIndex, (it) => ({
+      ...it,
+      megaMenuCategories: (it.megaMenuCategories || []).map(
+        (cat: any, ci: number) =>
+          ci === catIndex
+            ? {
+                ...cat,
+                items: (cat.items || []).map((s: any, si: number) =>
+                  si === subIndex ? { ...s, ...updates } : s
+                ),
+              }
+            : cat
+      ),
+    }));
+  };
+
+  const removeMegaItem = (
+    itemIndex: number,
+    catIndex: number,
+    subIndex: number
+  ) => {
+    mapNavItem(itemIndex, (it) => ({
+      ...it,
+      megaMenuCategories: (it.megaMenuCategories || []).map(
+        (cat: any, ci: number) =>
+          ci === catIndex
+            ? {
+                ...cat,
+                items: (cat.items || []).filter(
+                  (_: any, si: number) => si !== subIndex
+                ),
+              }
+            : cat
+      ),
+    }));
   };
 
   // --- Footer Column Helpers ---
@@ -273,7 +399,11 @@ export default function SiteSettingsPage() {
       ...prev,
       socialLinks: [
         ...(prev.socialLinks || []),
-        { platform: "Instagram", url: "https://instagram.com/rope4", icon: "instagram" },
+        {
+          platform: "Instagram",
+          url: "https://instagram.com/rope4",
+          icon: "instagram",
+        },
       ],
     }));
   };
@@ -318,20 +448,35 @@ export default function SiteSettingsPage() {
   return (
     <div className="space-y-6">
       {/* Top Action Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-5">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Site Settings & Navigation</h1>
-          <p className="text-sm text-muted-foreground">
-            Configure header mega-menus, top promo banner, logo branding, and footer sections.
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            Site Settings & Navigation
+          </h1>
+          <p className="text-sm text-slate-500 mt-0.5">
+            Configure header mega-menus, top promo banner, logo branding, and
+            footer sections.
           </p>
         </div>
-        <Button onClick={handleSave} disabled={isSaving} className="gap-2">
-          {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+        <Button
+          onClick={handleSave}
+          disabled={isSaving}
+          className="gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
+        >
+          {isSaving ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Save className="h-4 w-4" />
+          )}
           <span>Save Changes</span>
         </Button>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-6"
+      >
         <TabsList className="grid grid-cols-2 w-full max-w-md">
           <TabsTrigger value="header" className="gap-2">
             <Menu className="h-4 w-4" />
@@ -352,13 +497,19 @@ export default function SiteSettingsPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-base">Top Announcement Banner</CardTitle>
+                  <CardTitle className="text-base">
+                    Top Announcement Banner
+                  </CardTitle>
                   <CardDescription>
-                    Promote special discounts, monsoon trek alerts, or seasonal notices.
+                    Promote special discounts, monsoon trek alerts, or seasonal
+                    notices.
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Label htmlFor="announce-toggle" className="text-xs font-normal">
+                  <Label
+                    htmlFor="announce-toggle"
+                    className="text-xs font-normal"
+                  >
                     {header.announcement?.enabled ? "Active" : "Disabled"}
                   </Label>
                   <Switch
@@ -367,7 +518,10 @@ export default function SiteSettingsPage() {
                     onCheckedChange={(checked) =>
                       setHeader((prev: any) => ({
                         ...prev,
-                        announcement: { ...prev.announcement, enabled: checked },
+                        announcement: {
+                          ...prev.announcement,
+                          enabled: checked,
+                        },
                       }))
                     }
                   />
@@ -384,7 +538,10 @@ export default function SiteSettingsPage() {
                       onChange={(e) =>
                         setHeader((prev: any) => ({
                           ...prev,
-                          announcement: { ...prev.announcement, text: e.target.value },
+                          announcement: {
+                            ...prev.announcement,
+                            text: e.target.value,
+                          },
                         }))
                       }
                       placeholder="e.g. Early Bird 15% off for upcoming Himalayan batches!"
@@ -397,7 +554,10 @@ export default function SiteSettingsPage() {
                       onChange={(e) =>
                         setHeader((prev: any) => ({
                           ...prev,
-                          announcement: { ...prev.announcement, badge: e.target.value },
+                          announcement: {
+                            ...prev.announcement,
+                            badge: e.target.value,
+                          },
                         }))
                       }
                       placeholder="e.g. New Season"
@@ -411,7 +571,10 @@ export default function SiteSettingsPage() {
                     onChange={(e) =>
                       setHeader((prev: any) => ({
                         ...prev,
-                        announcement: { ...prev.announcement, linkUrl: e.target.value },
+                        announcement: {
+                          ...prev.announcement,
+                          linkUrl: e.target.value,
+                        },
                       }))
                     }
                     placeholder="/programs?season=monsoon"
@@ -425,7 +588,9 @@ export default function SiteSettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Brand Logo & Identity</CardTitle>
-              <CardDescription>Displayed in the sticky navigation header.</CardDescription>
+              <CardDescription>
+                Displayed in the sticky navigation header.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -434,7 +599,10 @@ export default function SiteSettingsPage() {
                   <Input
                     value={header.logoText || ""}
                     onChange={(e) =>
-                      setHeader((prev: any) => ({ ...prev, logoText: e.target.value }))
+                      setHeader((prev: any) => ({
+                        ...prev,
+                        logoText: e.target.value,
+                      }))
                     }
                     placeholder="Rope4"
                   />
@@ -444,7 +612,10 @@ export default function SiteSettingsPage() {
                   <Input
                     value={header.tagline || ""}
                     onChange={(e) =>
-                      setHeader((prev: any) => ({ ...prev, tagline: e.target.value }))
+                      setHeader((prev: any) => ({
+                        ...prev,
+                        tagline: e.target.value,
+                      }))
                     }
                     placeholder="Outdoor Education & Adventure"
                   />
@@ -452,11 +623,13 @@ export default function SiteSettingsPage() {
               </div>
               <div className="space-y-2">
                 <Label>Logo Image</Label>
-                <UploadFiles
-                  folder="branding"
+                <ImageUrlInput
                   value={header.logoUrl || ""}
                   onChange={(url) =>
-                    setHeader((prev: any) => ({ ...prev, logoUrl: url as string }))
+                    setHeader((prev: any) => ({
+                      ...prev,
+                      logoUrl: url as string,
+                    }))
                   }
                 />
               </div>
@@ -466,9 +639,12 @@ export default function SiteSettingsPage() {
           {/* Quick Contact & Action CTA Button */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Quick Contact & Header CTA Button</CardTitle>
+              <CardTitle className="text-base">
+                Quick Contact & Header CTA Button
+              </CardTitle>
               <CardDescription>
-                Phone numbers and primary action button (e.g. &apos;Plan Trek&apos;).
+                Phone numbers and primary action button (e.g. &apos;Plan
+                Trek&apos;).
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -480,7 +656,10 @@ export default function SiteSettingsPage() {
                     onChange={(e) =>
                       setHeader((prev: any) => ({
                         ...prev,
-                        quickContact: { ...prev.quickContact, phone: e.target.value },
+                        quickContact: {
+                          ...prev.quickContact,
+                          phone: e.target.value,
+                        },
                       }))
                     }
                     placeholder="+880 1711 000 000"
@@ -493,7 +672,10 @@ export default function SiteSettingsPage() {
                     onChange={(e) =>
                       setHeader((prev: any) => ({
                         ...prev,
-                        quickContact: { ...prev.quickContact, email: e.target.value },
+                        quickContact: {
+                          ...prev.quickContact,
+                          email: e.target.value,
+                        },
                       }))
                     }
                     placeholder="adventure@rope4.org"
@@ -506,7 +688,10 @@ export default function SiteSettingsPage() {
                     onChange={(e) =>
                       setHeader((prev: any) => ({
                         ...prev,
-                        quickContact: { ...prev.quickContact, address: e.target.value },
+                        quickContact: {
+                          ...prev.quickContact,
+                          address: e.target.value,
+                        },
                       }))
                     }
                     placeholder="Dhaka, Bangladesh"
@@ -516,7 +701,9 @@ export default function SiteSettingsPage() {
 
               <div className="pt-2 border-t">
                 <div className="flex items-center justify-between mb-3">
-                  <Label className="font-semibold text-sm">Action CTA Button</Label>
+                  <Label className="font-semibold text-sm">
+                    Action CTA Button
+                  </Label>
                   <div className="flex items-center gap-2">
                     <Label htmlFor="cta-toggle" className="text-xs font-normal">
                       {header.ctaButton?.isVisible ? "Visible" : "Hidden"}
@@ -541,7 +728,10 @@ export default function SiteSettingsPage() {
                       onChange={(e) =>
                         setHeader((prev: any) => ({
                           ...prev,
-                          ctaButton: { ...prev.ctaButton, label: e.target.value },
+                          ctaButton: {
+                            ...prev.ctaButton,
+                            label: e.target.value,
+                          },
                         }))
                       }
                       placeholder="Plan Adventure"
@@ -569,12 +759,21 @@ export default function SiteSettingsPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-base">Navigation Menu Items</CardTitle>
+                <CardTitle className="text-base">
+                  Navigation Menu Items
+                </CardTitle>
                 <CardDescription>
-                  Reorder and configure header menu links, dropdowns, and mega-menus.
+                  Reorder and configure header menu links, dropdowns, and
+                  mega-menus.
                 </CardDescription>
               </div>
-              <Button type="button" variant="outline" size="sm" onClick={addNavItem} className="gap-1">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addNavItem}
+                className="gap-1"
+              >
                 <Plus className="h-4 w-4" />
                 <span>Add Nav Link</span>
               </Button>
@@ -598,7 +797,9 @@ export default function SiteSettingsPage() {
                         <span className="h-6 w-6 rounded bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
                           {idx + 1}
                         </span>
-                        <span className="font-semibold text-sm">{item.label || "Untitled Link"}</span>
+                        <span className="font-semibold text-sm">
+                          {item.label || "Untitled Link"}
+                        </span>
                         {item.isMegaMenu && (
                           <span className="text-[10px] bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300 px-2 py-0.5 rounded-full font-medium">
                             Mega Menu
@@ -631,7 +832,9 @@ export default function SiteSettingsPage() {
                         <Label className="text-xs">Menu Label</Label>
                         <Input
                           value={item.label}
-                          onChange={(e) => updateNavItem(idx, { label: e.target.value })}
+                          onChange={(e) =>
+                            updateNavItem(idx, { label: e.target.value })
+                          }
                           placeholder="e.g. Choose Trek"
                         />
                       </div>
@@ -639,13 +842,15 @@ export default function SiteSettingsPage() {
                         <Label className="text-xs">Destination URL</Label>
                         <Input
                           value={item.href}
-                          onChange={(e) => updateNavItem(idx, { href: e.target.value })}
+                          onChange={(e) =>
+                            updateNavItem(idx, { href: e.target.value })
+                          }
                           placeholder="e.g. /programs"
                         />
                       </div>
                     </div>
 
-                    {/* Simple Sub-menu children */}
+                    {/* Simple Sub-menu children (Mega Menu OFF) */}
                     {!item.isMegaMenu && (
                       <div className="pt-2 border-t space-y-2">
                         <div className="flex items-center justify-between">
@@ -662,30 +867,32 @@ export default function SiteSettingsPage() {
                             <Plus className="h-3 w-3 mr-1" /> Add Dropdown Link
                           </Button>
                         </div>
+                        {(item.children || []).length === 0 && (
+                          <p className="text-xs text-muted-foreground">
+                            No sub-links: this item renders as a plain link.
+                          </p>
+                        )}
                         <div className="space-y-2">
                           {(item.children || []).map((child: any, cIdx: number) => (
                             <div key={cIdx} className="flex items-center gap-2">
                               <Input
                                 value={child.label}
-                                onChange={(e) => {
-                                  const updatedChildren = [...item.children];
-                                  updatedChildren[cIdx].label = e.target.value;
-                                  updateNavItem(idx, { children: updatedChildren });
-                                }}
+                                onChange={(e) =>
+                                  updateNavChild(idx, cIdx, { label: e.target.value })
+                                }
                                 placeholder="Sub-link label"
                                 className="h-8 text-xs"
                               />
                               <Input
                                 value={child.href}
-                                onChange={(e) => {
-                                  const updatedChildren = [...item.children];
-                                  updatedChildren[cIdx].href = e.target.value;
-                                  updateNavItem(idx, { children: updatedChildren });
-                                }}
+                                onChange={(e) =>
+                                  updateNavChild(idx, cIdx, { href: e.target.value })
+                                }
                                 placeholder="/path"
                                 className="h-8 text-xs"
                               />
                               <Button
+                                type="button"
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => removeNavChild(idx, cIdx)}
@@ -693,6 +900,142 @@ export default function SiteSettingsPage() {
                               >
                                 <Trash2 className="h-3.5 w-3.5" />
                               </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Mega Menu columns (Mega Menu ON) */}
+                    {item.isMegaMenu && (
+                      <div className="pt-2 border-t space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-xs font-semibold text-muted-foreground">
+                            Mega Menu Columns
+                          </Label>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => addMegaCategory(idx)}
+                            className="h-7 text-xs text-primary"
+                          >
+                            <Plus className="h-3 w-3 mr-1" /> Add Column
+                          </Button>
+                        </div>
+                        {(item.megaMenuCategories || []).length === 0 && (
+                          <p className="text-xs text-muted-foreground">
+                            Add at least one column with links, otherwise the website shows this
+                            item as a plain link.
+                          </p>
+                        )}
+                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+                          {(item.megaMenuCategories || []).map((cat: any, catIdx: number) => (
+                            <div
+                              key={catIdx}
+                              className="rounded-md border bg-background p-3 space-y-2"
+                            >
+                              <div className="flex items-center gap-2">
+                                <Input
+                                  value={cat.title}
+                                  onChange={(e) =>
+                                    updateMegaCategory(idx, catIdx, { title: e.target.value })
+                                  }
+                                  placeholder="Column title (e.g. Himalayan Treks)"
+                                  className="h-8 text-xs font-semibold"
+                                />
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => removeMegaCategory(idx, catIdx)}
+                                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                  title="Remove column"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </Button>
+                              </div>
+                              <div className="space-y-2">
+                                {(cat.items || []).map((sub: any, subIdx: number) => (
+                                  <div
+                                    key={subIdx}
+                                    className="rounded border border-dashed p-2 space-y-1.5"
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <Input
+                                        value={sub.label}
+                                        onChange={(e) =>
+                                          updateMegaItem(idx, catIdx, subIdx, {
+                                            label: e.target.value,
+                                          })
+                                        }
+                                        placeholder="Link label"
+                                        className="h-8 text-xs"
+                                      />
+                                      <Input
+                                        value={sub.href}
+                                        onChange={(e) =>
+                                          updateMegaItem(idx, catIdx, subIdx, {
+                                            href: e.target.value,
+                                          })
+                                        }
+                                        placeholder="/path"
+                                        className="h-8 text-xs"
+                                      />
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => removeMegaItem(idx, catIdx, subIdx)}
+                                        className="h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
+                                      >
+                                        <Trash2 className="h-3.5 w-3.5" />
+                                      </Button>
+                                    </div>
+                                    <Input
+                                      value={sub.description || ""}
+                                      onChange={(e) =>
+                                        updateMegaItem(idx, catIdx, subIdx, {
+                                          description: e.target.value,
+                                        })
+                                      }
+                                      placeholder="Short description (optional)"
+                                      className="h-8 text-xs"
+                                    />
+                                    <div className="flex items-center gap-2">
+                                      <Input
+                                        value={sub.badge || ""}
+                                        onChange={(e) =>
+                                          updateMegaItem(idx, catIdx, subIdx, {
+                                            badge: e.target.value,
+                                          })
+                                        }
+                                        placeholder="Badge (optional)"
+                                        className="h-8 text-xs w-32 shrink-0"
+                                      />
+                                      <Input
+                                        value={sub.image || ""}
+                                        onChange={(e) =>
+                                          updateMegaItem(idx, catIdx, subIdx, {
+                                            image: e.target.value,
+                                          })
+                                        }
+                                        placeholder="Image URL (optional)"
+                                        className="h-8 text-xs"
+                                      />
+                                    </div>
+                                  </div>
+                                ))}
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => addMegaItem(idx, catIdx)}
+                                  className="h-7 text-xs text-primary"
+                                >
+                                  <Plus className="h-3 w-3 mr-1" /> Add Link
+                                </Button>
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -712,8 +1055,12 @@ export default function SiteSettingsPage() {
           {/* About & Copyright */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">About Company Blurb & Legal</CardTitle>
-              <CardDescription>Displayed in the main footer column.</CardDescription>
+              <CardTitle className="text-base">
+                About Company Blurb & Legal
+              </CardTitle>
+              <CardDescription>
+                Displayed in the main footer column.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -722,7 +1069,10 @@ export default function SiteSettingsPage() {
                   rows={3}
                   value={footer.aboutText || ""}
                   onChange={(e) =>
-                    setFooter((prev: any) => ({ ...prev, aboutText: e.target.value }))
+                    setFooter((prev: any) => ({
+                      ...prev,
+                      aboutText: e.target.value,
+                    }))
                   }
                   placeholder="Rope4 provides world-class outdoor education and adventure travel experiences..."
                 />
@@ -733,7 +1083,10 @@ export default function SiteSettingsPage() {
                   <Input
                     value={footer.copyright || ""}
                     onChange={(e) =>
-                      setFooter((prev: any) => ({ ...prev, copyright: e.target.value }))
+                      setFooter((prev: any) => ({
+                        ...prev,
+                        copyright: e.target.value,
+                      }))
                     }
                     placeholder="© 2026 Rope4. All rights reserved."
                   />
@@ -759,12 +1112,21 @@ export default function SiteSettingsPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-base">Footer Navigation Columns</CardTitle>
+                <CardTitle className="text-base">
+                  Footer Navigation Columns
+                </CardTitle>
                 <CardDescription>
-                  Group links by category (e.g. &apos;Expeditions&apos;, &apos;Learning&apos;, &apos;Company&apos;).
+                  Group links by category (e.g. &apos;Expeditions&apos;,
+                  &apos;Learning&apos;, &apos;Company&apos;).
                 </CardDescription>
               </div>
-              <Button type="button" variant="outline" size="sm" onClick={addFooterColumn} className="gap-1">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addFooterColumn}
+                className="gap-1"
+              >
                 <Plus className="h-4 w-4" />
                 <span>Add Column</span>
               </Button>
@@ -783,7 +1145,10 @@ export default function SiteSettingsPage() {
                         onChange={(e) => {
                           const updated = [...footer.columns];
                           updated[colIdx].title = e.target.value;
-                          setFooter((prev: any) => ({ ...prev, columns: updated }));
+                          setFooter((prev: any) => ({
+                            ...prev,
+                            columns: updated,
+                          }));
                         }}
                         placeholder="e.g. Himalayan Treks"
                       />
@@ -801,7 +1166,9 @@ export default function SiteSettingsPage() {
                   {/* Links inside column */}
                   <div className="space-y-2 pt-2 border-t">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-muted-foreground">Column Links</span>
+                      <span className="text-xs font-semibold text-muted-foreground">
+                        Column Links
+                      </span>
                       <Button
                         type="button"
                         variant="ghost"
@@ -819,8 +1186,12 @@ export default function SiteSettingsPage() {
                           value={link.label}
                           onChange={(e) => {
                             const updated = [...footer.columns];
-                            updated[colIdx].links[linkIdx].label = e.target.value;
-                            setFooter((prev: any) => ({ ...prev, columns: updated }));
+                            updated[colIdx].links[linkIdx].label =
+                              e.target.value;
+                            setFooter((prev: any) => ({
+                              ...prev,
+                              columns: updated,
+                            }));
                           }}
                           placeholder="Link Text"
                           className="h-8 text-xs"
@@ -830,7 +1201,10 @@ export default function SiteSettingsPage() {
                           onChange={(e) => {
                             const updated = [...footer.columns];
                             updated[colIdx].links[linkIdx].url = e.target.value;
-                            setFooter((prev: any) => ({ ...prev, columns: updated }));
+                            setFooter((prev: any) => ({
+                              ...prev,
+                              columns: updated,
+                            }));
                           }}
                           placeholder="/path"
                           className="h-8 text-xs"
@@ -855,10 +1229,20 @@ export default function SiteSettingsPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-base">Social Media Profiles</CardTitle>
-                <CardDescription>Facebook, Instagram, YouTube, LinkedIn links.</CardDescription>
+                <CardTitle className="text-base">
+                  Social Media Profiles
+                </CardTitle>
+                <CardDescription>
+                  Facebook, Instagram, YouTube, LinkedIn links.
+                </CardDescription>
               </div>
-              <Button type="button" variant="outline" size="sm" onClick={addSocialLink} className="gap-1">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addSocialLink}
+                className="gap-1"
+              >
                 <Plus className="h-4 w-4" />
                 <span>Add Social Link</span>
               </Button>
@@ -871,7 +1255,10 @@ export default function SiteSettingsPage() {
                     onChange={(e) => {
                       const updated = [...footer.socialLinks];
                       updated[sIdx].platform = e.target.value;
-                      setFooter((prev: any) => ({ ...prev, socialLinks: updated }));
+                      setFooter((prev: any) => ({
+                        ...prev,
+                        socialLinks: updated,
+                      }));
                     }}
                     placeholder="Platform (e.g. Facebook)"
                     className="w-1/3"
@@ -881,7 +1268,10 @@ export default function SiteSettingsPage() {
                     onChange={(e) => {
                       const updated = [...footer.socialLinks];
                       updated[sIdx].url = e.target.value;
-                      setFooter((prev: any) => ({ ...prev, socialLinks: updated }));
+                      setFooter((prev: any) => ({
+                        ...prev,
+                        socialLinks: updated,
+                      }));
                     }}
                     placeholder="Profile URL"
                     className="flex-1"
@@ -903,24 +1293,41 @@ export default function SiteSettingsPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-base">Trust & Accreditation Badges</CardTitle>
-                <CardDescription>Mountaineering affiliations, Leave No Trace, Eco certification.</CardDescription>
+                <CardTitle className="text-base">
+                  Trust & Accreditation Badges
+                </CardTitle>
+                <CardDescription>
+                  Mountaineering affiliations, Leave No Trace, Eco
+                  certification.
+                </CardDescription>
               </div>
-              <Button type="button" variant="outline" size="sm" onClick={addBadge} className="gap-1">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addBadge}
+                className="gap-1"
+              >
                 <Plus className="h-4 w-4" />
                 <span>Add Badge</span>
               </Button>
             </CardHeader>
             <CardContent className="space-y-4">
               {(footer.badges || []).map((badge: any, bIdx: number) => (
-                <div key={bIdx} className="p-3 border rounded-lg flex items-center gap-4">
+                <div
+                  key={bIdx}
+                  className="p-3 border rounded-lg flex items-center gap-4"
+                >
                   <div className="flex-1 space-y-2">
                     <Input
                       value={badge.label}
                       onChange={(e) => {
                         const updated = [...footer.badges];
                         updated[bIdx].label = e.target.value;
-                        setFooter((prev: any) => ({ ...prev, badges: updated }));
+                        setFooter((prev: any) => ({
+                          ...prev,
+                          badges: updated,
+                        }));
                       }}
                       placeholder="Badge Title (e.g. Leave No Trace Partner)"
                     />
@@ -929,7 +1336,10 @@ export default function SiteSettingsPage() {
                       onChange={(e) => {
                         const updated = [...footer.badges];
                         updated[bIdx].imageUrl = e.target.value;
-                        setFooter((prev: any) => ({ ...prev, badges: updated }));
+                        setFooter((prev: any) => ({
+                          ...prev,
+                          badges: updated,
+                        }));
                       }}
                       placeholder="Badge Image URL"
                     />

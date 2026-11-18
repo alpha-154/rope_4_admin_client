@@ -176,26 +176,20 @@ export default function InventoryPage() {
           const low = row.original.lowStockThreshold;
           if (qty <= 0) {
             return (
-              <Badge variant="destructive" className="font-medium text-xs">
+              <Badge variant="destructive">
                 Out of Stock (0)
               </Badge>
             );
           }
           if (qty <= low) {
             return (
-              <Badge
-                variant="outline"
-                className="bg-amber-500/15 text-amber-700 border-amber-300 font-medium text-xs"
-              >
+              <Badge variant="warning">
                 Low Stock ({qty})
               </Badge>
             );
           }
           return (
-            <Badge
-              variant="outline"
-              className="bg-emerald-500/15 text-emerald-700 border-emerald-300 font-medium text-xs"
-            >
+            <Badge variant="success">
               In Stock ({qty})
             </Badge>
           );
@@ -235,13 +229,13 @@ export default function InventoryPage() {
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-5">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <Boxes className="h-6 w-6 text-primary" />
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <Boxes className="h-6 w-6 text-emerald-600" />
             <span>Inventory & Stock Control</span>
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-500 mt-0.5">
             Monitor real-time warehouse stock, track purchase receipts, and audit inventory movements.
           </p>
         </div>

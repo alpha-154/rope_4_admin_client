@@ -124,35 +124,13 @@ export function getOrderColumns(
         const pStatus = row.original.paymentStatus;
         switch (pStatus) {
           case "PAID":
-            return (
-              <Badge
-                variant="outline"
-                className="bg-emerald-500/15 text-emerald-700 border-emerald-300 text-xs"
-              >
-                Paid
-              </Badge>
-            );
+            return <Badge variant="success">Paid</Badge>;
           case "FAILED":
-            return (
-              <Badge variant="destructive" className="text-xs">
-                Failed
-              </Badge>
-            );
+            return <Badge variant="destructive">Failed</Badge>;
           case "REFUNDED":
-            return (
-              <Badge variant="secondary" className="text-xs">
-                Refunded
-              </Badge>
-            );
+            return <Badge variant="secondary">Refunded</Badge>;
           default:
-            return (
-              <Badge
-                variant="outline"
-                className="bg-amber-500/15 text-amber-700 border-amber-300 text-xs"
-              >
-                Unpaid / Pending
-              </Badge>
-            );
+            return <Badge variant="warning">Unpaid</Badge>;
         }
       },
     },
@@ -163,47 +141,15 @@ export function getOrderColumns(
         const status = row.original.status;
         switch (status) {
           case "CONFIRMED":
-            return (
-              <Badge
-                variant="outline"
-                className="bg-sky-500/15 text-sky-700 border-sky-300 text-xs font-semibold"
-              >
-                Confirmed
-              </Badge>
-            );
+            return <Badge variant="info">Confirmed</Badge>;
           case "SHIPPED":
-            return (
-              <Badge
-                variant="outline"
-                className="bg-indigo-500/15 text-indigo-700 border-indigo-300 text-xs font-semibold"
-              >
-                Shipped
-              </Badge>
-            );
+            return <Badge variant="default">Shipped</Badge>;
           case "DELIVERED":
-            return (
-              <Badge
-                variant="outline"
-                className="bg-emerald-500/15 text-emerald-700 border-emerald-300 text-xs font-semibold"
-              >
-                Delivered
-              </Badge>
-            );
+            return <Badge variant="success">Delivered</Badge>;
           case "CANCELLED":
-            return (
-              <Badge variant="destructive" className="text-xs font-semibold">
-                Cancelled
-              </Badge>
-            );
+            return <Badge variant="destructive">Cancelled</Badge>;
           default:
-            return (
-              <Badge
-                variant="outline"
-                className="bg-amber-500/15 text-amber-700 border-amber-300 text-xs font-semibold"
-              >
-                Pending
-              </Badge>
-            );
+            return <Badge variant="warning">Pending</Badge>;
         }
       },
     },

@@ -37,3 +37,8 @@ next-env.d.ts
 *.sln
 *.sw?
 
+
+# Claude Code (personal / generated)
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/worktrees/
