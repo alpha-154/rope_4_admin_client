@@ -67,16 +67,23 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
+  const [internalColumnFilters, setInternalColumnFilters] =
+    React.useState<ColumnFiltersState>([]);
+  const [internalSorting, setInternalSorting] =
+    React.useState<SortingState>([]);
+
+  const activeColumnFilters = columnFilters ?? internalColumnFilters;
+  const activeSorting = sorting ?? internalSorting;
 
   const table = useReactTable({
     data,
     columns,
     state: {
-      sorting,
+      sorting: activeSorting,
       columnVisibility,
       rowSelection,
       pagination,
-      columnFilters,
+      columnFilters: activeColumnFilters,
     },
     enableRowSelection: true,
     enableColumnFilters: true,
@@ -86,9 +93,9 @@ export function DataTable<TData, TValue>({
     manualSorting: true,
     getRowId: (row: any) => row._id || row.id,
     onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
+    onSortingChange: setSorting ?? setInternalSorting,
     onPaginationChange: setPagination,
-    onColumnFiltersChange: setColumnFilters,
+    onColumnFiltersChange: setColumnFilters ?? setInternalColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -114,7 +121,7 @@ export function DataTable<TData, TValue>({
         onSearchChange={handleSearchChange}
         actions={toolbarActions}
       />
-      <div className="rounded-md border bg-card">
+      <div className="rounded-xl border border-slate-200/80 bg-white shadow-sm overflow-hidden">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

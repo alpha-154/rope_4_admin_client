@@ -69,15 +69,6 @@ export const getFaqColumns = (
     ),
   },
   {
-    accessorKey: "slug",
-    header: "Slug",
-    cell: ({ row }) => (
-      <code className="text-xs bg-muted px-2 py-0.5 rounded text-muted-foreground">
-        {row.getValue("slug")}
-      </code>
-    ),
-  },
-  {
     accessorKey: "faqs",
     header: "Q&A Items",
     cell: ({ row }) => {
@@ -95,13 +86,9 @@ export const getFaqColumns = (
     cell: ({ row }) => {
       const active = row.getValue("isActive");
       return active ? (
-        <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20 border-emerald-500/20">
-          Active
-        </Badge>
+        <Badge variant="success">Active</Badge>
       ) : (
-        <Badge variant="outline" className="text-muted-foreground">
-          Inactive
-        </Badge>
+        <Badge variant="secondary">Inactive</Badge>
       );
     },
   },

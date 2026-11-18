@@ -2,7 +2,8 @@
 
 import { DeleteAlert } from "@/components/shared/delete-alert";
 import { TipTapEditor } from "@/components/shared/tiptap-editor";
-import { UploadFiles } from "@/components/shared/upload-files";
+import { CategoryCombobox } from "@/components/shared/category-combobox";
+import { ImageUrlInput } from "@/components/shared/image-url-input";
 import { Badge } from "@/components/ui/badge/badge";
 import { Button } from "@/components/ui/button/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card/card";
@@ -39,6 +40,7 @@ export interface ProgramFormData {
   title: string;
   slug: string;
   category: string;
+  categoryId?: string;
   country: string;
   region: string;
   shortDescription: string;
@@ -103,16 +105,6 @@ export interface ProgramFormData {
   status: string;
 }
 
-const CATEGORIES = [
-  "Trek",
-  "Expedition",
-  "Premium Trip",
-  "Summer Camp",
-  "Family With Kids",
-  "Learning Program",
-  "Wilderness Survival",
-];
-
 const DIFFICULTIES = [
   "Easy",
   "Easy to Moderate",
@@ -141,7 +133,8 @@ const ALL_MONTHS = [
 const defaultProgramData: ProgramFormData = {
   title: "",
   slug: "",
-  category: "Trek",
+  category: "",
+  categoryId: "",
   country: "India",
   region: "Uttarakhand",
   shortDescription: "",
@@ -311,6 +304,12 @@ export function ProgramForm({
       return;
     }
 
+    if (!formData.categoryId && !formData.category.trim()) {
+      toast.error("Please select or create a category");
+      setActiveTab("overview");
+      return;
+    }
+
     if (formData.itinerary.length === 0) {
       toast.error("Please add at least 1 day in the itinerary");
       setActiveTab("itinerary");
@@ -333,8 +332,11 @@ export function ProgramForm({
         ...cleanData
       } = formData as any;
 
+      const { categoryId, ...restData } = cleanData;
       const payload = {
-        ...cleanData,
+        ...restData,
+        // Send the reference when we have it; legacy programs fall back to the name
+        ...(categoryId ? { categoryId } : {}),
         price: {
           ...cleanData.price,
           amount: Number(cleanData.price?.amount || 0),
@@ -476,23 +478,18 @@ export function ProgramForm({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="category">Category *</Label>
-                  <Select
-                    value={formData.category}
-                    onValueChange={(val) =>
-                      setFormData((prev) => ({ ...prev, category: val }))
+                  <CategoryCombobox
+                    id="category"
+                    value={formData.categoryId}
+                    valueLabel={formData.category}
+                    onChange={(cat) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        categoryId: cat._id,
+                        category: cat.name,
+                      }))
                     }
-                  >
-                    <SelectTrigger id="category">
-                      <SelectValue placeholder="Select Category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CATEGORIES.map((cat) => (
-                        <SelectItem key={cat} value={cat}>
-                          {cat}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  />
                 </div>
 
                 <div className="space-y-1.5">
@@ -645,7 +642,7 @@ export function ProgramForm({
             <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label className="font-semibold">Hero Images (Main banner)</Label>
-                <UploadFiles
+                <ImageUrlInput
                   value={formData.heroImages}
                   onChange={(urls) =>
                     setFormData((prev) => ({
@@ -653,14 +650,13 @@ export function ProgramForm({
                       heroImages: Array.isArray(urls) ? urls : [urls],
                     }))
                   }
-                  folder="programs/hero"
                   multiple
                 />
               </div>
 
               <div className="space-y-2 pt-4 border-t">
                 <Label className="font-semibold">Program Gallery</Label>
-                <UploadFiles
+                <ImageUrlInput
                   value={formData.gallery}
                   onChange={(urls) =>
                     setFormData((prev) => ({
@@ -668,7 +664,6 @@ export function ProgramForm({
                       gallery: Array.isArray(urls) ? urls : [urls],
                     }))
                   }
-                  folder="programs/gallery"
                   multiple
                 />
               </div>

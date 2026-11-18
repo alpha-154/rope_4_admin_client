@@ -105,26 +105,20 @@ export function getProductColumns(
         const { stockQuantity, lowStockThreshold } = row.original;
         if (stockQuantity <= 0) {
           return (
-            <Badge variant="destructive" className="font-medium text-xs">
+            <Badge variant="destructive">
               Out of Stock (0)
             </Badge>
           );
         }
         if (stockQuantity <= lowStockThreshold) {
           return (
-            <Badge
-              variant="outline"
-              className="bg-amber-500/15 text-amber-700 border-amber-300 font-medium text-xs"
-            >
+            <Badge variant="warning">
               Low Stock ({stockQuantity})
             </Badge>
           );
         }
         return (
-          <Badge
-            variant="outline"
-            className="bg-emerald-500/15 text-emerald-700 border-emerald-300 font-medium text-xs"
-          >
+          <Badge variant="success">
             In Stock ({stockQuantity})
           </Badge>
         );
@@ -135,17 +129,10 @@ export function getProductColumns(
       header: "Status",
       cell: ({ row }) => {
         const isPublished = row.original.isPublished;
-        return (
-          <div className="flex items-center gap-2">
-            <span
-              className={`h-2.5 w-2.5 rounded-full ${
-                isPublished ? "bg-emerald-500" : "bg-muted-foreground"
-              }`}
-            />
-            <span className="text-xs font-medium">
-              {isPublished ? "Published" : "Draft"}
-            </span>
-          </div>
+        return isPublished ? (
+          <Badge variant="success">Published</Badge>
+        ) : (
+          <Badge variant="warning">Draft</Badge>
         );
       },
     },

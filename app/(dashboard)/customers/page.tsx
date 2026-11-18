@@ -78,13 +78,13 @@ export default function CustomersPage() {
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-5">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <Users className="h-6 w-6 text-primary" />
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <Users className="h-6 w-6 text-emerald-600" />
             <span>Customers & Travelers</span>
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-500 mt-0.5">
             View registered traveler profiles, track orders volume and lifetime spend, and manage customer access.
           </p>
         </div>
@@ -93,7 +93,7 @@ export default function CustomersPage() {
       {/* Filter Toolbar */}
       <div className="flex items-center gap-3">
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white border-slate-200 text-xs rounded-xl shadow-xs">
             <SelectValue placeholder="Customer Status" />
           </SelectTrigger>
           <SelectContent>

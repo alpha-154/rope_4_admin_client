@@ -1,6 +1,6 @@
 "use client";
 
-import { UploadFiles } from "@/components/shared/upload-files";
+import { ImageUrlInput } from "@/components/shared/image-url-input";
 import { Button } from "@/components/ui/button/button";
 import {
   Dialog,
@@ -306,7 +306,7 @@ export function ProductDialog({
           {/* Product Images Upload */}
           <div className="space-y-1.5">
             <Label>Product Gallery Images</Label>
-            <UploadFiles
+            <ImageUrlInput
               value={formData.images}
               onChange={(urls) =>
                 setFormData((prev) => ({
@@ -315,7 +315,6 @@ export function ProductDialog({
                 }))
               }
               multiple
-              folder="products"
             />
           </div>
 

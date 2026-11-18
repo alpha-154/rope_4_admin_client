@@ -123,17 +123,17 @@ export default function ProductsPage() {
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-5">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <Package className="h-6 w-6 text-primary" />
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <Package className="h-6 w-6 text-emerald-600" />
             <span>Gear Store Products</span>
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-500 mt-0.5">
             Manage adventure gear, outdoor apparel, climbing hardware, and camping equipment.
           </p>
         </div>
-        <Button onClick={handleCreate} className="gap-2 shrink-0">
+        <Button onClick={handleCreate} className="gap-2 shrink-0 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs">
           <Plus className="h-4 w-4" />
           <span>Add Product</span>
         </Button>
@@ -142,7 +142,7 @@ export default function ProductsPage() {
       {/* Filter Toolbar */}
       <div className="flex flex-wrap items-center gap-3">
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white border-slate-200 text-xs rounded-xl shadow-xs">
             <SelectValue placeholder="Category filter" />
           </SelectTrigger>
           <SelectContent>
@@ -157,7 +157,7 @@ export default function ProductsPage() {
         </Select>
 
         <Select value={stockFilter} onValueChange={setStockFilter}>
-          <SelectTrigger className="w-[160px]">
+          <SelectTrigger className="w-[160px] bg-white border-slate-200 text-xs rounded-xl shadow-xs">
             <SelectValue placeholder="Stock Status" />
           </SelectTrigger>
           <SelectContent>

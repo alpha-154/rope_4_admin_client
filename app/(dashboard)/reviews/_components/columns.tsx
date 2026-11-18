@@ -83,16 +83,13 @@ export const getReviewColumns = (
     },
   },
   {
-    accessorKey: "source",
-    header: "Source",
-    cell: ({ row }) => {
-      const source = row.original.source;
-      return (
-        <Badge variant="outline" className="capitalize text-xs">
-          {source.replace("-", " ")}
-        </Badge>
-      );
-    },
+    accessorKey: "designation",
+    header: "Designation",
+    cell: ({ row }) => (
+      <span className="text-xs text-muted-foreground line-clamp-2 max-w-[200px]">
+        {row.original.designation || "—"}
+      </span>
+    ),
   },
   {
     accessorKey: "text",
@@ -112,24 +109,12 @@ export const getReviewColumns = (
     cell: ({ row }) => {
       const status = row.original.status;
       if (status === "approved") {
-        return (
-          <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/20">
-            Approved
-          </Badge>
-        );
+        return <Badge variant="success">Approved</Badge>;
       }
       if (status === "rejected") {
-        return (
-          <Badge variant="destructive" className="text-xs">
-            Rejected
-          </Badge>
-        );
+        return <Badge variant="destructive">Rejected</Badge>;
       }
-      return (
-        <Badge variant="outline" className="text-amber-600 border-amber-300">
-          Pending
-        </Badge>
-      );
+      return <Badge variant="warning">Pending</Badge>;
     },
   },
   {

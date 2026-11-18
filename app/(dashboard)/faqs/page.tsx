@@ -142,10 +142,10 @@ export default function FaqsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
             Frequently Asked Questions
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-500 mt-0.5">
             Manage help topics and Q&A accordions. Reorder categories with the arrow controls.
           </p>
         </div>
@@ -154,7 +154,7 @@ export default function FaqsPage() {
             setSelectedFaq(null);
             setDialogOpen(true);
           }}
-          className="gap-2"
+          className="gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
         >
           <Plus className="h-4 w-4" /> Add Category
         </Button>

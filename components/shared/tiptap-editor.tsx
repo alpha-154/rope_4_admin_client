@@ -82,14 +82,14 @@ export function TipTapEditor({
   return (
     <div
       className={cn(
-        "rounded-md border bg-background transition-all",
+        "rounded-xl border border-slate-200/80 bg-white transition-all shadow-xs overflow-hidden",
         isFullScreen &&
-          "fixed inset-4 z-50 flex flex-col bg-background shadow-2xl overflow-hidden",
+          "fixed inset-4 z-50 flex flex-col bg-white shadow-2xl overflow-hidden",
         className
       )}
     >
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-1 border-b bg-muted/30 p-2">
+      <div className="flex flex-wrap items-center gap-1 border-b border-slate-200 bg-slate-50 p-2">
         <Button
           type="button"
           variant={editor.isActive("bold") ? "secondary" : "ghost"}

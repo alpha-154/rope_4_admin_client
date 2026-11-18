@@ -58,44 +58,35 @@ export const movementColumns: ColumnDef<any>[] = [
       switch (type) {
         case "ORDER_REDUCTION":
           return (
-            <Badge
-              variant="outline"
-              className="bg-rose-500/10 text-rose-700 border-rose-300 gap-1 text-xs"
-            >
+            <Badge variant="destructive" className="gap-1">
               <ArrowDownRight className="h-3 w-3" />
               Order Checkout
             </Badge>
           );
         case "PURCHASE_RECEIPT":
           return (
-            <Badge
-              variant="outline"
-              className="bg-emerald-500/10 text-emerald-700 border-emerald-300 gap-1 text-xs"
-            >
+            <Badge variant="success" className="gap-1">
               <ArrowUpRight className="h-3 w-3" />
               Stock Receipt
             </Badge>
           );
         case "RETURN_RESTOCK":
           return (
-            <Badge
-              variant="outline"
-              className="bg-blue-500/10 text-blue-700 border-blue-300 gap-1 text-xs"
-            >
+            <Badge variant="info" className="gap-1">
               <RefreshCw className="h-3 w-3" />
               Return Restock
             </Badge>
           );
         case "DAMAGE_DISCARD":
           return (
-            <Badge variant="destructive" className="gap-1 text-xs">
+            <Badge variant="destructive" className="gap-1">
               <ArrowDownRight className="h-3 w-3" />
               Damaged / Discard
             </Badge>
           );
         default:
           return (
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="secondary">
               Manual Adjustment
             </Badge>
           );

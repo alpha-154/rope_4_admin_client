@@ -104,17 +104,17 @@ export default function OrganizationProfilePage() {
     <div className="max-w-4xl space-y-6">
       {/* Title */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Organization Profile</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Organization Profile</h1>
+        <p className="text-sm text-slate-500 mt-0.5">
           Manage your organization&apos;s brand identity, contact details, currency, and social links.
         </p>
       </div>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         {/* Core Info */}
-        <div className="p-6 rounded-xl border border-border bg-card shadow-sm space-y-4">
-          <h2 className="text-base font-semibold flex items-center gap-2">
-            <Building className="h-4 w-4 text-primary" />
+        <div className="p-6 rounded-2xl border border-slate-200/80 bg-white shadow-sm space-y-4">
+          <h2 className="text-base font-semibold text-slate-900 flex items-center gap-2">
+            <Building className="h-4 w-4 text-emerald-600" />
             <span>General Information</span>
           </h2>
 
@@ -219,8 +219,8 @@ export default function OrganizationProfilePage() {
         </div>
 
         {/* Social Links */}
-        <div className="p-6 rounded-xl border border-border bg-card shadow-sm space-y-4">
-          <h2 className="text-base font-semibold">Social Media Channels</h2>
+        <div className="p-6 rounded-2xl border border-slate-200/80 bg-white shadow-sm space-y-4">
+          <h2 className="text-base font-semibold text-slate-900">Social Media Channels</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">

@@ -1,7 +1,7 @@
 "use client";
 
 import { TipTapEditor } from "@/components/shared/tiptap-editor";
-import { UploadFiles } from "@/components/shared/upload-files";
+import { ImageUrlInput } from "@/components/shared/image-url-input";
 import { Button } from "@/components/ui/button/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card/card";
 import { Input } from "@/components/ui/input/input";
@@ -325,7 +325,7 @@ export function NewsForm({ initialData, isEditing = false }: NewsFormProps) {
               <CardTitle>Cover Image</CardTitle>
             </CardHeader>
             <CardContent>
-              <UploadFiles
+              <ImageUrlInput
                 value={formData.cover || ""}
                 onChange={(url) =>
                   setFormData((prev) => ({
@@ -333,7 +333,6 @@ export function NewsForm({ initialData, isEditing = false }: NewsFormProps) {
                     cover: Array.isArray(url) ? url[0] : url,
                   }))
                 }
-                folder="news/covers"
               />
             </CardContent>
           </Card>

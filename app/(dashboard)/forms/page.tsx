@@ -155,10 +155,10 @@ export default function FormsPage() {
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-5">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Forms & Inquiries Inbox</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Forms & Inquiries Inbox</h1>
+          <p className="text-sm text-slate-500 mt-0.5">
             Manage incoming traveler inquiries, booking requests, and custom form schemas.
           </p>
         </div>
@@ -199,7 +199,7 @@ export default function FormsPage() {
         {/* ======================================================== */}
         <TabsContent value="inbox" className="space-y-4">
           {/* Status Filter Chips & Form Selector */}
-          <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-muted/30 border border-border rounded-lg">
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-white border border-slate-200/80 rounded-xl shadow-xs">
             <div className="flex flex-wrap items-center gap-1.5">
               {[
                 { id: "all", label: "All" },

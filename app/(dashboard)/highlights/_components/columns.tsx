@@ -14,23 +14,13 @@ import { DataTableColumnHeader } from "@/components/shared/data-table/data-table
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, Pencil, Trash } from "lucide-react";
 import React from "react";
-import { HighlightFormData } from "./highlight-dialog";
+import { HighlightApiData } from "./highlight-dialog";
+import { formatHighlightValue } from "@/lib/highlight-options";
 
 export const getHighlightColumns = (
-  onEdit: (highlight: HighlightFormData) => void,
+  onEdit: (highlight: HighlightApiData) => void,
   onDelete: (id: string) => void
-): ColumnDef<HighlightFormData>[] => [
-  {
-    accessorKey: "sectionKey",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Section Key" />
-    ),
-    cell: ({ row }) => (
-      <div className="font-medium text-foreground">
-        {row.getValue("sectionKey")}
-      </div>
-    ),
-  },
+): ColumnDef<HighlightApiData>[] => [
   {
     accessorKey: "sectionTitle",
     header: ({ column }) => (
@@ -53,27 +43,44 @@ export const getHighlightColumns = (
     accessorKey: "items",
     header: "Cards / Stats",
     cell: ({ row }) => {
-      const count = row.original.items?.length || 0;
+      const items = row.original.items || [];
       return (
-        <Badge variant="secondary" className="font-normal text-xs">
-          {count} item{count !== 1 ? "s" : ""}
-        </Badge>
+        <div className="flex flex-wrap gap-1 max-w-md">
+          {items.length === 0 && <span className="text-xs text-muted-foreground">No cards</span>}
+          {items.slice(0, 4).map((it, i) => (
+            <Badge key={i} variant="secondary" className="font-normal text-xs">
+              {formatHighlightValue(it.value, it.valueSign) && (
+                <strong className="mr-1">{formatHighlightValue(it.value, it.valueSign)}</strong>
+              )}
+              {it.label}
+            </Badge>
+          ))}
+          {items.length > 4 && (
+            <Badge variant="outline" className="font-normal text-xs">
+              +{items.length - 4} more
+            </Badge>
+          )}
+        </div>
       );
     },
   },
   {
     accessorKey: "isActive",
-    header: "Status",
+    header: "Visibility",
     cell: ({ row }) => {
-      const active = row.getValue("isActive");
-      return active ? (
-        <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20 border-emerald-500/20">
-          Active
-        </Badge>
-      ) : (
-        <Badge variant="outline" className="text-muted-foreground">
-          Inactive
-        </Badge>
+      const { isActive, isPublic } = row.original;
+      const live = isActive !== false && isPublic !== false;
+      return (
+        <div className="flex flex-col gap-1 items-start">
+          {live ? (
+            <Badge variant="success">Live on website</Badge>
+          ) : (
+            <Badge variant="secondary">Hidden</Badge>
+          )}
+          <span className="text-[11px] text-muted-foreground">
+            {isActive !== false ? "Active" : "Inactive"} · {isPublic !== false ? "Public" : "Private"}
+          </span>
+        </div>
       );
     },
   },
